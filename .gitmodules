@@ -1,0 +1,6 @@
+[submodule "vendor/vuejs-ai"]
+	path = vendor/vuejs-ai
+	url = https://github.com/vuejs-ai/skills
+[submodule "vendor/web-design-guidelines"]
+	path = vendor/web-design-guidelines
+	url = https://github.com/vercel-labs/agent-skills
