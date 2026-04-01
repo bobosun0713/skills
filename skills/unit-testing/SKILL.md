@@ -1,6 +1,6 @@
 ---
 name: unit-testing
-description: Unit testing best practices, workflows, and common pitfalls. Use this skill whenever the user wants to write, generate, fix, or improve unit tests. Triggers include: "write tests", "unit test", "test coverage", "how to test", "how to mock", "tests keep failing", "how to test a composable / service / function", or any task involving Vitest, Jest, Vue Test Utils, or testing-library. Even if the user simply says "help me test this code", this skill must be triggered. Always generate a test-case.md in doc/test/ before writing any test code.
+description: "Unit testing best practices, workflows, and common pitfalls. Use this skill whenever the user wants to write, generate, fix, or improve unit tests. Triggers include: write tests, unit test, test coverage, how to test, how to mock, tests keep failing, how to test a composable / service / function, or any task involving Vitest, Jest, Vue Test Utils, or testing-library. Even if the user simply says help me test this code, this skill must be triggered. Always generate a test-case.md in doc/test/ before writing any test code."
 ---
 
 # Unit Testing Skill
