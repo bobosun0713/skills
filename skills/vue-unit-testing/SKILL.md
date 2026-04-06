@@ -1,5 +1,5 @@
 ---
-name: unit-testing
+name: vue-unit-testing
 description: "Unit testing best practices, workflows, and common pitfalls. Use this skill whenever the user wants to write, generate, fix, or improve unit tests. Triggers include: write tests, unit test, test coverage, how to test, how to mock, tests keep failing, how to test a composable / service / function, or any task involving Vitest, Jest, Vue Test Utils, or testing-library. Even if the user simply says help me test this code, this skill must be triggered. Always generate a test-case.md in doc/test/ before writing any test code."
 ---
 
@@ -18,16 +18,16 @@ Best practices, workflows, and common pitfalls for Vue 3 / TypeScript / Vitest p
 
 ## Quick Reference Index
 
-| Scenario | Reference File |
-|---|---|
-| **Generate test-case.md document** | [→ test-case-template.md](reference/test-case-template.md) |
-| Project test environment setup (Vitest + Vue Test Utils) | [→ testing-setup.md](reference/testing-setup.md) |
-| Tests keep breaking after refactoring | [→ testing-blackbox.md](reference/testing-blackbox.md) |
-| Async tests / race conditions | [→ testing-async.md](reference/testing-async.md) |
-| How to test Composables | [→ testing-composables.md](reference/testing-composables.md) |
-| How to test Pinia Stores | [→ testing-pinia.md](reference/testing-pinia.md) |
-| How to mock APIs / external dependencies | [→ testing-mocking.md](reference/testing-mocking.md) |
-| How to test Vue components | [→ testing-components.md](reference/testing-components.md) |
+| Scenario                                                 | Reference File                                               |
+| -------------------------------------------------------- | ------------------------------------------------------------ |
+| **Generate test-case.md document**                       | [→ test-case-template.md](reference/test-case-template.md)   |
+| Project test environment setup (Vitest + Vue Test Utils) | [→ testing-setup.md](reference/testing-setup.md)             |
+| Tests keep breaking after refactoring                    | [→ testing-blackbox.md](reference/testing-blackbox.md)       |
+| Async tests / race conditions                            | [→ testing-async.md](reference/testing-async.md)             |
+| How to test Composables                                  | [→ testing-composables.md](reference/testing-composables.md) |
+| How to test Pinia Stores                                 | [→ testing-pinia.md](reference/testing-pinia.md)             |
+| How to mock APIs / external dependencies                 | [→ testing-mocking.md](reference/testing-mocking.md)         |
+| How to test Vue components                               | [→ testing-components.md](reference/testing-components.md)   |
 
 ---
 
@@ -38,6 +38,7 @@ Best practices, workflows, and common pitfalls for Vue 3 / TypeScript / Vitest p
 ### Step 1: Understand the subject under test
 
 Read the source code and identify:
+
 - Is this a function, composable, component, or store?
 - What are the inputs? What are the side effects (API calls, emits, route navigation)?
 - What are the "observable outputs" (return values, DOM changes, emitted events)?
@@ -58,18 +59,18 @@ After creating it, inform the user: "Test case list created at `doc/test/xxx.tes
 Use the AAA structure:
 
 ```typescript
-it('should remove the item from the list when the user clicks delete', async () => {
+it("should remove the item from the list when the user clicks delete", async () => {
   // Arrange
   const wrapper = mount(TodoList, {
-    props: { items: [{ id: 1, text: 'Buy milk' }] }
-  })
+    props: { items: [{ id: 1, text: "Buy milk" }] },
+  });
 
   // Act
-  await wrapper.find('[data-testid="delete-btn"]').trigger('click')
+  await wrapper.find('[data-testid="delete-btn"]').trigger("click");
 
   // Assert
-  expect(wrapper.findAll('[data-testid="todo-item"]')).toHaveLength(0)
-})
+  expect(wrapper.findAll('[data-testid="todo-item"]')).toHaveLength(0);
+});
 ```
 
 ### Step 4: Run and verify
