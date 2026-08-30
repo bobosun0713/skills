@@ -1,0 +1,35 @@
+name: Test Submodule Update Only
+
+on:
+  workflow_dispatch: # 允許我們在網頁上手動點擊測試
+
+jobs:
+  test-update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Check submodule status
+        id: check_status
+        run: |
+          git submodule update --remote
+          STATUS_OUTPUT=$(git status --porcelain)
+
+          if [[ -n "$STATUS_OUTPUT" ]]; then
+            echo "needs_update=true" >> $GITHUB_OUTPUT
+            
+            # 抓出被改動的資料夾名稱，並存入環境變數 changed_modules 供下一步使用
+            CHANGED_MODULES=$(echo "$STATUS_OUTPUT" | awk '{print $2}' | tr '\n' ' ')
+            echo "changed_modules=$CHANGED_MODULES" >> $GITHUB_OUTPUT
+            
+            echo "🔴 發現新版本！名單如下："
+            echo "$CHANGED_MODULES"
+          else
+            echo "needs_update=false" >> $GITHUB_OUTPUT
+            echo "🟢 目前已是最新版本。"
+          fi
