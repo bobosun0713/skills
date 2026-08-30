@@ -1,7 +1,7 @@
 name: Test Submodule Update Only
 
 on:
-  workflow_dispatch: # 允許我們在網頁上手動點擊測試
+  workflow_dispatch:
 
 jobs:
   test-update:
@@ -33,3 +33,9 @@ jobs:
             echo "needs_update=false" >> $GITHUB_OUTPUT
             echo "🟢 目前已是最新版本。"
           fi
+
+      - name: Call sync
+        if: steps.check_status.outputs.needs_update == 'true'
+        run: |
+          MODULES="${{ steps.check_status.outputs.changed_modules }}"
+          node scripts/sync.js $MODULES
