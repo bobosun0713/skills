@@ -1,0 +1,16 @@
+{
+  "type": "module",
+  "private": true,
+  "packageManager": "pnpm@10.18.3",
+  "scripts": {
+    "lint": "eslint .",
+    "sync": "tsx scripts/sync.js"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^9.3.0",
+    "@types/node": "^25.9.5",
+    "eslint": "^10.9.1",
+    "tsx": "^4.23.13",
+    "typescript": "^5.9.3"
+  }
+}
