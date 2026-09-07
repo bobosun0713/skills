@@ -3,6 +3,10 @@ name: Test Submodule Update Only
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   test-update:
     runs-on: ubuntu-latest
@@ -13,6 +17,19 @@ jobs:
         with:
           submodules: true
           fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Setup Node.js & pnpm
+        uses: actions/setup-node@v4
+
+      - name: Install dependencies
+        run: |
+         corepack enable
+         pnpm install
 
       - name: Check submodule status
         id: check_status
@@ -38,4 +55,29 @@ jobs:
         if: steps.check_status.outputs.needs_update == 'true'
         run: |
           MODULES="${{ steps.check_status.outputs.changed_modules }}"
-          node scripts/sync.js $MODULES
+          pnpm run sync $MODULES
+
+      - name: Git Commit
+        id: set_commit_msg
+        run: |
+          # 檢查 git status 中，是否有任何變動是落在 skills/ 目錄底下
+          if git status --porcelain | grep -q "skills/"; then
+            echo "📦 偵測到 Submodule 與 skills 底下的同步檔案皆有更新"
+            echo "msg=chore(sync): update submodule and synchronized skills" >> $GITHUB_OUTPUT
+          else
+            echo "🟡 只有 Submodule 指標更新（skills 檔案無異動）"
+            echo "msg=chore(sync): update submodule pointer only" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: ${{ steps.set_commit_msg.outputs.msg }}
+          title: '🤖 Auto-sync Submodules and Skills'
+          body: |
+            自動同步機器人偵測到 Submodule 更新：
+            - 自動執行了 TS 同步與差異比對
+            - 更新了對應的 skills 檔案
+          branch: ci/sync-submodules  
+          delete-branch: true

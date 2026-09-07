@@ -1,0 +1,13 @@
+# Package Manager
+node_modules
+.pnpm-debug.log*
+
+# System
+.DS_Store
+
+# Bundle
+dist
+lib
+
+# local flies
+.cache
