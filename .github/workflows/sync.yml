@@ -3,6 +3,10 @@ name: Test Submodule Update Only
 on:
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   test-update:
     runs-on: ubuntu-latest
@@ -14,6 +18,14 @@ jobs:
           submodules: true
           fetch-depth: 0
 
+      - name: Setup Node.js & pnpm
+        uses: actions/setup-node@v4
+
+      - name: Enable Corepack & Install dependencies
+        run: |
+         corepack enable
+         pnpm install
+
       - name: Check submodule status
         id: check_status
         run: |
@@ -23,19 +35,69 @@ jobs:
           if [[ -n "$STATUS_OUTPUT" ]]; then
             echo "needs_update=true" >> $GITHUB_OUTPUT
             
-            # 抓出被改動的資料夾名稱，並存入環境變數 changed_modules 供下一步使用
             CHANGED_MODULES=$(echo "$STATUS_OUTPUT" | awk '{print $2}' | tr '\n' ' ')
             echo "changed_modules=$CHANGED_MODULES" >> $GITHUB_OUTPUT
-            
-            echo "🔴 發現新版本！名單如下："
+
+            echo "New versions found! The list is as follows:"
             echo "$CHANGED_MODULES"
           else
             echo "needs_update=false" >> $GITHUB_OUTPUT
-            echo "🟢 目前已是最新版本。"
+            echo "Already up to date."
           fi
 
       - name: Call sync
         if: steps.check_status.outputs.needs_update == 'true'
         run: |
           MODULES="${{ steps.check_status.outputs.changed_modules }}"
-          node scripts/sync.js $MODULES
+          pnpm run sync $MODULES
+
+      - name: Generate Commit Message and PR Summary
+        id: summary
+        run: |
+          STATUS=$(git status --porcelain)
+          TODAY=$(date +'%Y-%m-%d')
+
+          echo "pr_title=Sync submodules and skills ($TODAY)" >> $GITHUB_OUTPUT
+
+          SUBMODULE_LIST=$(echo "$STATUS" | awk '{print $2}' | grep -v '^skills/' | sed 's/^/- `/; s/$/`/' || true)
+          [[ -z "$SUBMODULE_LIST" ]] && SUBMODULE_LIST="_None_"
+
+          SKILLS_LIST=$(echo "$STATUS" | awk '{print $2}' | grep '^skills/' | sed 's/^/- `/; s/$/`/' || true)
+
+          if [[ -n "$SKILLS_LIST" ]]; then
+            echo "msg=chore(sync): update submodule and synchronized skills" >> $GITHUB_OUTPUT
+            
+            {
+              echo "pr_body<<EOF"
+              echo "### Sync submodules and skills"
+              echo ""
+              echo "#### 📦 Updated Submodules"
+              echo "$SUBMODULE_LIST"
+              echo ""
+              echo "#### 📂 Updated Skills Files"
+              echo "$SKILLS_LIST"
+              echo "EOF"
+            } >> $GITHUB_OUTPUT
+          else
+            echo "msg=chore(sync): update submodule pointer only" >> $GITHUB_OUTPUT
+
+            {
+              echo "pr_body<<EOF"
+              echo "### Sync submodules and skills  "
+              echo ""
+              echo "#### 📦 Updated Submodules"
+              echo "$SUBMODULE_LIST"
+              echo "EOF"
+            } >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Pull Request
+        if: steps.check_status.outputs.needs_update == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: ${{ steps.summary.outputs.msg }}
+          title: ${{ steps.summary.outputs.pr_title }}
+          body: ${{ steps.summary.outputs.pr_body }}
+          branch: ci/sync-submodules  
+          delete-branch: true
