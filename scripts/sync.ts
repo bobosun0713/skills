@@ -62,18 +62,18 @@ async function syncModules() {
 
   for (const modulePath of args) {
     const moduleName = basename(modulePath);
-    const skillNames = VENDOR_MODULES[moduleName];
+    const skillModule = VENDOR_MODULES[moduleName];
 
-    if (!skillNames) {
+    if (!skillModule) {
       console.log(`⚠️  [${moduleName}] not found in moduleMap, skipping.`);
       continue;
     }
 
-    const vendorSkillsDir = join(rootDir, 'vendor', moduleName, 'skills');
+    const vendorSkillsDir = join(rootDir, 'vendor', moduleName, skillModule.path);
 
     console.log(`\n📦 Preparing to sync [${moduleName}] -> skills/\n`);
 
-    for (const skillName of new Set(skillNames)) {
+    for (const skillName of new Set(skillModule.skills)) {
       const sourceDir = join(vendorSkillsDir, skillName);
       const targetDir = join(skillsDir, skillName);
 
