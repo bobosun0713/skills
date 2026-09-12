@@ -16,4 +16,8 @@ export const VENDOR_MODULES: Record<string, { path: string; skills: string[] }> 
     path: 'skills',
     skills: ['web-design-guidelines'],
   },
+  'wshobson-agents': {
+    path: 'plugins/frontend-mobile-development/skills',
+    skills: ['tailwind-design-system'],
+  },
 };

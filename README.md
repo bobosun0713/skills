@@ -50,6 +50,7 @@ pnpx skills add bobosun0713/skills --skill vue-best-practices -g -a claude-code
 | **[vue-router-best-practices](./skills/vue-router-best-practices)**           | [vuejs-ai/skills](https://github.com/vuejs-ai/skills)                   | 高效的路由策略、導航守衛與元件生命週期互動。                 |
 | **[vue-testing-best-practices](./skills/vue-testing-best-practices)**         | [vuejs-ai/skills](https://github.com/vuejs-ai/skills)                   | 涵蓋 Vitest、VTU 和 Playwright 的全面測試策略。              |
 | **[web-design-guidelines](./skills/web-design-guidelines)**                   | [vercel-labs/agent-skills](https://github.com/vercel-labs/agent-skills) | UI/UX、無障礙設計（Accessibility）與現代網頁介面規範審核。   |
+| **[tailwind-design-system](./skills/tailwind-design-system)**                 | [wshobson/agents](https://github.com/wshobson/agents/tree/main/plugins/frontend-mobile-development/skills/tailwind-design-system) | 使用Tailwind CSS v4、設計標記、元件庫和響應式模式來建立可擴展的設計系統。在建立元件庫、實施設計系統或規範化UI模式時使用。|
 
 ---
 
